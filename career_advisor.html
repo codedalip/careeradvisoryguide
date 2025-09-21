@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Career & Skills Advisor</title>
+  <style>
+    :root {
+      --accent: #10b981;
+      --accent2: #6366f1;
+      --bg: #101624;
+      --panel: #181f2e;
+      --panel-light: #f7fafc;
+      --text: #e6eef6;
+      --text-light: #232b3d;
+      --border: #2a3142;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      min-height: 100vh;
+      min-width: 100vw;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, var(--bg) 60%, #232b3d 100%);
+      background-size: 200% 200%;
+      animation: gradientMove 8s ease-in-out infinite alternate;
+      color: var(--text);
+      font-family: Inter,Segoe UI,Roboto,sans-serif;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 18px;
+      transition: background 0.3s;
+      box-sizing: border-box;
+    }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+    .app {
+      width: 100vw;
+      min-height: 100vh;
+      min-width: 100vw;
+      background: var(--panel);
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+      margin: 0;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      transition: background 0.3s, box-shadow 0.3s;
+      /* No overflow, let page scroll naturally */
+    }
+    .app:focus-within {
+      box-shadow: 0 8px 32px #000a, 0 0 0 4px var(--accent2);
+      border-color: var(--accent2);
+    }
+    .header {
+      background: linear-gradient(90deg, var(--accent2) 0%, var(--accent) 100%);
+      padding: 28px 20px;
+      border-radius: 0 0 32px 32px;
+      box-shadow: 0 2px 12px #0002;
+      text-align: center;
+      position: relative;
+      width: 100%;
+      max-width: none;
+      box-sizing: border-box;
+      z-index: 60;
+      animation: fadeInHeader 0.8s cubic-bezier(.23,1.12,.62,1.01);
+    }
+    h1 {
+      font-size: 2rem;
+      margin: 0 0 6px 0;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      color: #fff;
+      text-shadow: 0 2px 8px #0003;
+    }
+    .desc {
+      font-size: 1.08rem;
+      color: #e0e7ef;
+      margin-bottom: 0;
+      font-weight: 500;
+    }
+    .toggle {
+      position: absolute;
+      top: 18px;
+      right: 24px;
+      background: #fff2;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle:hover { background: #fff4; }
+    .main-content {
+      background: linear-gradient(120deg, rgba(24,31,46,0.98) 80%, #232b3d 100%);
+      border-radius: 28px;
+      box-shadow: 0 8px 40px #000b, 0 0 0 2px var(--accent2);
+  margin: 0 auto 40px auto;
+  padding-top: 0;
+      padding: 36px 28px 32px 28px;
+      max-width: 520px;
+      width: 100%;
+      backdrop-filter: blur(2px);
+      border: 2px solid var(--accent2);
+      animation: floatIn 0.7s cubic-bezier(.23,1.12,.62,1.01);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      position: relative;
+      z-index: 2;
+    }
+    @keyframes floatIn {
+      0% { opacity: 0; transform: translateY(40px) scale(0.98); }
+      100% { opacity: 1; transform: none; }
+    }
+    .form-wrap {
+      width: 100%;
+      padding: 0;
+      margin-bottom: 18px;
+    }
+    .section-title {
+      font-size: 1.13rem;
+      font-weight: 700;
+      color: var(--accent2);
+      margin: 18px 0 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 0.01em;
+    }
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 14px 0 6px 0;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.01em;
+    }
+    .input-icon {
+      font-size: 1.1em;
+      opacity: 0.8;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 11px;
+      border: 1.5px solid var(--border);
+      background: #141a28;
+      color: var(--text);
+      font-size: 1.08rem;
+      margin-bottom: 6px;
+      transition: border 0.2s, background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 1px 4px #0002;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--accent2);
+      background: #181f2e;
+      box-shadow: 0 0 0 2px var(--accent2);
+    }
+    textarea { min-height: 70px; resize: vertical; }
+    button[type="submit"] {
+      background: linear-gradient(90deg, var(--accent2) 0%, var(--accent) 100%);
+      color: #fff;
+      font-weight: 700;
+      padding: 14px 0;
+      border: none;
+      border-radius: 11px;
+      width: 100%;
+      font-size: 1.13rem;
+      cursor: pointer;
+      margin-top: 22px;
+      box-shadow: 0 2px 8px #0002;
+      transition: background 0.2s, transform 0.15s;
+      letter-spacing: 0.01em;
+      animation: fadeInBtn 1.1s 0.2s cubic-bezier(.23,1.12,.62,1.01);
+    }
+    @keyframes fadeInBtn {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: none; }
+    }
+    button[type="submit"]:hover {
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 6px 18px #10b98144;
+    }
+    button:disabled {
+      background: #2a3142;
+      color: #888;
+      cursor: not-allowed;
+    }
+    .result {
+      border-left: 8px solid var(--accent);
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      position: relative;
+      background: linear-gradient(120deg, #232b3d 80%, #181f2e 100%);
+  box-shadow: 0 4px 32px #0007, 0 0 0 2px var(--accent2);
+      border-radius: 18px;
+      margin-top: 24px;
+      margin-bottom: 0;
+      padding: 28px 18px 28px 18px;
+      width: 100%;
+      max-width: 100%;
+      overflow-wrap: break-word;
+      word-break: break-word;
+  border: 2px solid var(--accent2);
+  z-index: 20;
+  flex-direction: column;
+    }
+    @keyframes fadeInResult {
+      to { opacity: 1; }
+    }
+    .result strong { color: var(--accent); }
+
+    .ask-another-btn {
+      margin: 24px auto 0 auto;
+      display: block;
+      background: linear-gradient(90deg, var(--accent2) 0%, var(--accent) 100%);
+      color: #fff;
+      font-weight: 700;
+      padding: 12px 32px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.08rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0002;
+      transition: background 0.2s, transform 0.15s;
+      letter-spacing: 0.01em;
+    }
+    .ask-another-btn:hover {
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 6px 18px #10b98144;
+    }
+    .loader {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid #2a3142;
+      border-top: 2.5px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    /* Light mode */
+    body.light {
+      background: linear-gradient(135deg, #f7fafc 60%, #e0e7ef 100%);
+      color: var(--text-light);
+    }
+    body.light .app {
+      background: var(--panel-light);
+      color: var(--text-light);
+      border-color: #e0e7ef;
+    }
+    body.light .header {
+      color: #232b3d;
+      text-shadow: none;
+    }
+    body.light input, body.light textarea, body.light select {
+      background: #fff;
+      color: #232b3d;
+      border-color: #cbd5e1;
+    }
+    body.light .result {
+      background: #f1f5f9;
+      color: #232b3d;
+      border-color: #e0e7ef;
+    }
+    body.light button[type="submit"] {
+      color: #fff;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 700px) {
+        .main-content {
+          max-width: 98vw;
+          padding-left: 4vw;
+          padding-right: 4vw;
+        }
+        .header {
+          max-width: 98vw;
+          padding-left: 4vw;
+          padding-right: 4vw;
+        }
+    }
+    @media (max-width: 480px) {
+        .main-content {
+          max-width: 100vw;
+          padding-left: 2vw;
+          padding-right: 2vw;
+        }
+        .header {
+          max-width: 100vw;
+          padding-left: 2vw;
+          padding-right: 2vw;
+        }
+        h1 { font-size: 1.3rem; }
+        .section-title { font-size: 1rem; }
+        .result { font-size: 1rem; }
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: -120px; left: -120px;
+      width: 520px; height: 520px;
+      background: radial-gradient(circle at 60% 40%, var(--accent2) 0%, transparent 70%);
+      opacity: 0.18;
+      z-index: 0;
+      pointer-events: none;
+      filter: blur(8px);
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -140px; right: -140px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle at 40% 60%, var(--accent) 0%, transparent 70%);
+      opacity: 0.13;
+      z-index: 0;
+      pointer-events: none;
+      filter: blur(12px);
+    }
+    .result:before {
+      content: '💡';
+      font-size: 1.7em;
+      margin-right: 8px;
+      opacity: 0.85;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .form-area {
+  width: 100%;
+  padding: 36px 28px 32px 28px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+.form-wrap {
+  padding: 0;
+  margin-bottom: 18px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <button class="toggle" id="themeToggle" title="Toggle dark/light mode">🌙</button>
+      <h1>AI Career & Skills Advisor</h1>
+      <div class="desc">Get personalized career path and skill recommendations powered by <strong>Google Gemini AI</strong>.</div>
+    </div>
+    <div class="main-content">
+        <div class="form-area">
+      <div class="form-wrap">
+        <form id="advisorForm">
+          <div class="section-title"><span class="input-icon">🛠️</span> Skills</div>
+          <label for="skills"><span class="input-icon">📝</span> Your Skills <span class="small" style="font-weight:400">(comma-separated)</span></label>
+          <input id="skills" type="text" placeholder="e.g. Python, Data Analysis, Communication" required />
+          <div class="section-title"><span class="input-icon">💡</span> Interests</div>
+          <label for="interests"><span class="input-icon">✨</span> Your Interests</label>
+          <input id="interests" type="text" placeholder="e.g. AI, Healthcare, Finance" required />
+          <div class="section-title"><span class="input-icon">🎯</span> Career Goals</div>
+          <label for="goals"><span class="input-icon">🏆</span> Career Goals</label>
+          <textarea id="goals" placeholder="e.g. Become a data scientist, work in tech for social good" required></textarea>
+          <button id="submitBtn" type="submit">🚀 Get Recommendations</button>
+        </form>
+      </div>
+      <div id="result" class="result" style="display:none"></div>
+    </div></div>
+  </div>
+  <script>
+  // SECURITY NOTE: Storing API keys in client-side code is insecure and for testing only.
+  // For production, run a server-side proxy that injects the API key (see server/ or netlify/).
+  // If you want to test quickly, paste your key below and the page will call the Gemini API directly.
+  // Be aware: direct browser requests may be blocked by CORS depending on the API and hosting.
+  // Paste your key between the quotes or leave empty to use the server proxy at /.netlify/functions/gemini-proxy
+  const GEMINI_API_KEY = API_KEY_HERE; // <-- PASTE YOUR GEMINI API KEY HERE for quick local testing
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.onclick = () => {
+      document.body.classList.toggle('light');
+      themeToggle.textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
+    };
+    // --- Gemini API call logic ---
+    const form = document.getElementById('advisorForm');
+    const resultDiv = document.getElementById('result');
+    const submitBtn = document.getElementById('submitBtn');
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      // The frontend posts to the local proxy which injects the API key server-side.
+      const skills = document.getElementById('skills').value.trim();
+      const interests = document.getElementById('interests').value.trim();
+      const goals = document.getElementById('goals').value.trim();
+      resultDiv.style.display = 'block';
+      resultDiv.style.opacity = 0;
+      resultDiv.innerHTML = '<span class="loader"></span> Generating personalized advice...';
+      submitBtn.disabled = true;
+      try {
+        const prompt = `You are a personalized AI career advisor. Given the following student profile, recommend:\n- 2-3 best-fit career paths\n- Key skills to develop next\n- A short action plan for the next 6 months\n\nProfile:\nSkills: ${skills}\nInterests: ${interests}\nGoals: ${goals}`;
+        const body = { contents: [{ parts: [{ text: prompt }] }] };
+
+        let res;
+        // If user pasted a key in this file, call Gemini directly from the browser (testing only).
+        if (GEMINI_API_KEY && GEMINI_API_KEY.length > 8) {
+          // Use Gemini 2.0 Flash generateContent endpoint as requested
+          const directUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+          try {
+            res = await fetch(directUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + GEMINI_API_KEY
+              },
+              // generateContent expects the `contents` payload shape directly
+              body: JSON.stringify(body)
+            });
+            // If we get 401 when sending a Bearer token, the provided string may be an API key (not an OAuth token).
+            // Try again by passing the API key as a query parameter (?key=API_KEY) which some Google endpoints accept.
+            if (res.status === 401) {
+              const altUrl = directUrl + '?key=' + encodeURIComponent(GEMINI_API_KEY);
+              try {
+                res = await fetch(altUrl, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(body)
+                });
+              } catch (err2) {
+                throw new Error('Direct Gemini request with key query param failed (network/CORS). Try using the server proxy instead. ' + err2.message);
+              }
+            }
+          } catch (err) {
+            // Network/CORS errors will surface here
+            throw new Error('Direct Gemini request failed (network/CORS). Try using the server proxy instead. ' + err.message);
+          }
+        } else {
+          // Default: Post to Netlify function proxy which will forward the request to Google Gemini securely
+          const url = '/.netlify/functions/gemini-proxy';
+          res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+        }
+        if(!res.ok){
+          const txt = await res.text();
+          // Helpful hint for CORS 405/403/401 errors
+          let hint = '';
+          if (res.status === 405) hint = ' (405: Method Not Allowed — the upstream endpoint likely expects a different HTTP method or path)';
+          if (res.status === 401 || res.status === 403) hint = ' (Authentication error — check your API key and whether direct browser calls are allowed)';
+          if (res.status === 0) hint = ' (Network/CORS error — the browser blocked the request)';
+          throw new Error('Gemini API error: '+res.status+' '+txt + hint);
+        }
+        const data = await res.json();
+        // Try multiple common response shapes
+        let reply = null;
+        if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) {
+          reply = data.candidates[0].content.parts.map(p => p.text || '').join('\n');
+        }
+        if (!reply && data.output && data.output[0] && data.output[0].content) {
+          // some older responses
+          reply = data.output.map(o => (o.content || []).map(c => c.text || '').join('\n')).join('\n');
+        }
+        if (!reply && data.result && data.result.output) {
+          reply = data.result.output[0].content[0].text;
+        }
+        if (!reply) {
+          resultDiv.innerHTML = '<span style="color:#ffb4b4">No response from Gemini. If you used a direct API key, this may be blocked by CORS — try using the server proxy instead.</span>';
+          resultDiv.style.opacity = 1;
+          submitBtn.disabled = false;
+          return;
+        }
+        // Parse reply into sections
+        const sections = parseSections(reply);
+        resultDiv.innerHTML = renderStructuredOutput(sections);
+        // Add Ask Another Question button
+        const askBtn = document.createElement('button');
+        askBtn.textContent = 'Ask Another Question';
+        askBtn.className = 'ask-another-btn';
+        askBtn.onclick = function() {
+          resultDiv.style.display = 'none';
+          resultDiv.innerHTML = '';
+          document.getElementById('skills').focus();
+          window.scrollTo({top: form.getBoundingClientRect().top + window.scrollY - 40, behavior: 'smooth'});
+        };
+        resultDiv.appendChild(askBtn);
+        resultDiv.style.opacity = 1;
+        // Scroll result into view for user
+        setTimeout(() => { resultDiv.scrollIntoView({behavior:'smooth', block:'center'}); }, 200);
+      } catch(err) {
+        resultDiv.innerHTML = '<span style="color:#ffb4b4">Error: '+err.message+'</span>';
+        resultDiv.style.opacity = 1;
+      }
+      submitBtn.disabled = false;
+    };
+
+    // Parse Gemini reply into sections
+    function parseSections(text) {
+      // Try to split by headings or bullet points
+      const sectionTitles = [
+        /career paths?/i,
+        /key skills?/i,
+        /action plan/i,
+        /next steps?/i
+      ];
+      const lines = text.split(/\r?\n/);
+      let current = null, sections = {}, buffer = [];
+      for (let line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        let matched = null;
+        for (let t of sectionTitles) {
+          if (t.test(trimmed)) { matched = t; break; }
+        }
+        if (matched) {
+          if (current && buffer.length) sections[current] = buffer.slice();
+          if (/career paths?/i.test(trimmed)) current = 'Career Paths';
+          else if (/key skills?/i.test(trimmed)) current = 'Key Skills';
+          else if (/action plan|next steps?/i.test(trimmed)) current = 'Action Plan';
+          buffer = [];
+        } else {
+          buffer.push(trimmed);
+        }
+      }
+      if (current && buffer.length) sections[current] = buffer;
+      // Fallback: try to parse bullets if no headings
+      if (Object.keys(sections).length === 0) {
+        let bullets = lines.filter(l => /^[-*•]/.test(l.trim()));
+        if (bullets.length) sections['Advice'] = bullets;
+        else sections['Advice'] = [text];
+      }
+      return sections;
+    }
+
+    // Render sections as structured HTML
+    function renderStructuredOutput(sections) {
+      let html = '';
+      if (sections['Career Paths']) {
+        html += `<div class="result-section"><div class="result-title">🚀 Career Paths</div><ul>`;
+        for (let item of sections['Career Paths']) {
+          html += `<li>${item.replace(/^[-*•]\s*/, '')}</li>`;
+        }
+        html += `</ul></div>`;
+      }
+      if (sections['Key Skills']) {
+        html += `<div class="result-section"><div class="result-title">🛠️ Key Skills to Develop</div><ul>`;
+        for (let item of sections['Key Skills']) {
+          html += `<li>${item.replace(/^[-*•]\s*/, '')}</li>`;
+        }
+        html += `</ul></div>`;
+      }
+      if (sections['Action Plan']) {
+        html += `<div class="result-section"><div class="result-title">📅 6-Month Action Plan</div><ul>`;
+        for (let item of sections['Action Plan']) {
+          html += `<li>${item.replace(/^[-*•]\s*/, '')}</li>`;
+        }
+        html += `</ul></div>`;
+      }
+      if (sections['Advice']) {
+        html += `<div class="result-section"><div class="result-title">💡 Advice</div><ul>`;
+        for (let item of sections['Advice']) {
+          html += `<li>${item.replace(/^[-*•]\s*/, '')}</li>`;
+        }
+        html += `</ul></div>`;
+      }
+      return html;
+    }
+    // No JS needed for responsiveness; handled by CSS
+  </script>
+</body>
+</html>
